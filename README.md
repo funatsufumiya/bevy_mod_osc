@@ -1,5 +1,7 @@
 # bevy_osc
 
+[![Crates.io](https://img.shields.io/crates/v/cargo-bevy_osc.svg)](https://crates.io/crates/bevy_osc)
+
 OSC plugin (using [rosc](https://github.com/klingtnet/rosc)) for Bevy engine.
 
 ## Usage
