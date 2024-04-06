@@ -3,6 +3,12 @@ name = "bevy_osc"
 version = "0.1.0"
 edition = "2021"
 
+readme = "README.md"
+license = "WTFPL"
+authors = ["Fumiya Funatsu <funatsu.fumiya@gmail.com>"]
+repository = "https://github.com/funatsufumiya/bevy_osc"
+keywords = ["osc"]
+
 [dependencies]
 bevy = "0.13"
 bevy_async_task = "0.1"
