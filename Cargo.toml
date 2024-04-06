@@ -1,0 +1,11 @@
+[package]
+name = "bevy_osc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = "0.13"
+bevy_async_task = "0.1"
+rosc = "~0.10"
+chrono = "0.4.19"
+async-std = "1.12.0"
