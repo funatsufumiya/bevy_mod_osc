@@ -7,7 +7,7 @@ readme = "README.md"
 description = "OSC plugin for Bevy engine"
 license = "WTFPL"
 authors = ["Fumiya Funatsu <funatsu.fumiya@gmail.com>"]
-repository = "https://github.com/funatsufumiya/bevy_osc"
+repository = "https://github.com/funatsufumiya/bevy_mod_osc"
 keywords = ["osc"]
 
 [dependencies]
