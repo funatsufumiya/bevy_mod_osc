@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_osc::osc_receiver::{OscMessageEvent, OscReceiverPlugin};
+use bevy_mod_osc::osc_receiver::{OscMessageEvent, OscReceiverPlugin};
 
 fn main() {
     App::new()

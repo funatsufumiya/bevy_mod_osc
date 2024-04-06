@@ -1,12 +1,12 @@
-# bevy_osc
+# bevy_mod_osc
 
-[![Crates.io](https://img.shields.io/crates/v/cargo-bevy_osc.svg)](https://crates.io/crates/bevy_osc)
+[![Crates.io](https://img.shields.io/crates/v/bevy_mod_osc.svg)](https://crates.io/crates/bevy_mod_osc)
 
 OSC plugin (using [rosc](https://github.com/klingtnet/rosc)) for Bevy engine.
 
 ## Usage
 
-Add `bevy_osc` to your `Cargo.toml`:
+Add `bevy_mod_osc` to your `Cargo.toml`:
 
 ## Version compatibility
 

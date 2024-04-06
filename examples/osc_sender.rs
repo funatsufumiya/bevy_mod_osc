@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_osc::osc_sender::OscSender;
+use bevy_mod_osc::osc_sender::OscSender;
 use std::time::Duration;
 
 #[derive(Resource)]

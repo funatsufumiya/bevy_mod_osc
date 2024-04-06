@@ -1,9 +1,10 @@
 [package]
-name = "bevy_osc"
+name = "bevy_mod_osc"
 version = "0.1.0"
 edition = "2021"
 
 readme = "README.md"
+description = "OSC plugin for Bevy engine"
 license = "WTFPL"
 authors = ["Fumiya Funatsu <funatsu.fumiya@gmail.com>"]
 repository = "https://github.com/funatsufumiya/bevy_osc"
