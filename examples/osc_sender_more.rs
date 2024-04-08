@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_mod_osc::osc_sender::OscSender;
+use rosc::OscType;
 use std::time::Duration;
 
 #[derive(Resource)]
@@ -28,7 +29,7 @@ fn update(
         let val: i32 = (time.elapsed_seconds().sin() * 100.0) as i32;
 
         // osc send message
-        osc_sender.send("/test", vec![rosc::OscType::Int(val)]);
+        osc_sender.send("/test", vec![OscType::Int(val)]);
 
         println!("Sent OSC message: /test {} to {}:{}", val, osc_sender.host, osc_sender.port);
 
