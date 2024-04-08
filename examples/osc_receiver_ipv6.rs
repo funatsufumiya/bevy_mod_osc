@@ -8,7 +8,7 @@ fn main() {
         //       if you want to make compatible with both, you should use IPv4 over IPv6 router or so on
         .add_plugins(OscReceiverPlugin {
             port: 1234,
-            ipv6: true,
+            use_ipv6: true,
             debug_print: true,
         })
         .add_systems(Update, osc_event_handler)

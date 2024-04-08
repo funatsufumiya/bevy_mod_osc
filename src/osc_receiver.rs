@@ -7,7 +7,7 @@ pub struct OscReceiverPlugin {
     /// The port to receive OSC messages (ex: 1234)
     pub port: u16,
     /// Whether to use IPv6
-    pub ipv6: bool,
+    pub use_ipv6: bool,
     /// Whether to print debug messages
     pub debug_print: bool,
 }
@@ -24,14 +24,14 @@ pub struct OscReceiver {
     /// Whether to print debug messages
     pub debug_print: bool,
     pub socket: Option<UdpSocket>,
-    pub ipv6: bool,
+    pub using_ipv6: bool,
 }
 
 impl Default for OscReceiverPlugin {
     fn default() -> Self {
         Self {
             port: 1234,
-            ipv6: false,
+            use_ipv6: false,
             debug_print: false,
         }
     }
@@ -39,7 +39,7 @@ impl Default for OscReceiverPlugin {
 
 impl Plugin for OscReceiverPlugin {
     fn build(&self, app: &mut App) {
-        let from_ip = if self.ipv6 {
+        let from_ip = if self.use_ipv6 {
             "[::1]"
         } else {
             "0.0.0.0"
@@ -59,7 +59,7 @@ impl Plugin for OscReceiverPlugin {
             port: self.port,
             debug_print: self.debug_print,
             socket: Some(socket),
-            ipv6: self.ipv6,
+            using_ipv6: self.use_ipv6,
         });
 
         // NOTE: register only once
@@ -71,10 +71,10 @@ impl Plugin for OscReceiverPlugin {
 }
 
 impl OscReceiverPlugin {
-    pub fn new(port: u16, ipv6:bool, debug_print: bool) -> Self {
+    pub fn new(port: u16, use_ipv6:bool, debug_print: bool) -> Self {
         Self {
             port,
-            ipv6,
+            use_ipv6,
             debug_print,
         }
     }
@@ -82,7 +82,7 @@ impl OscReceiverPlugin {
     pub fn new_ipv4(port: u16, debug_print: bool) -> Self {
         Self {
             port,
-            ipv6: false,
+            use_ipv6: false,
             debug_print,
         }
     }
@@ -90,7 +90,7 @@ impl OscReceiverPlugin {
     pub fn new_ipv6(port: u16, debug_print: bool) -> Self {
         Self {
             port,
-            ipv6: true,
+            use_ipv6: true,
             debug_print,
         }
     }
