@@ -4,6 +4,8 @@ use bevy_mod_osc::osc_receiver::{OscMessageEvent, OscReceiverPlugin};
 fn main() {
     App::new()
         .add_plugins(MinimalPlugins)
+        // NOTE: IPv6 is not compatible with IPv4, so you can't receive messages from IPv4
+        //       if you want to make compatible with both, you should use IPv4 over IPv6 router or so on
         .add_plugins(OscReceiverPlugin {
             port: 1234,
             ipv6: true,

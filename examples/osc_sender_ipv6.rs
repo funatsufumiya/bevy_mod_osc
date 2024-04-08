@@ -5,6 +5,8 @@ use bevy_mod_osc::osc_sender::OscSender;
 fn main() {
     App::new()
         .add_plugins(MinimalPlugins)
+        // NOTE: IPv6 is not compatible with IPv4, so you can't send messages to IPv4 receiver
+        //       if you want to make compatible with both, you should use IPv4 over IPv6 router or so on
         .insert_resource(OscSender::new("[::1]", 1234))
         .add_systems(Startup, setup)
         .run();
