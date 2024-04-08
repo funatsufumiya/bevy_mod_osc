@@ -1,6 +1,6 @@
 use std::net::UdpSocket;
-use bevy::prelude::*;
-use rosc::{encoder, OscArray, OscMessage, OscPacket, OscType};
+use bevy::{prelude::*, reflect::impl_from_reflect_value};
+use rosc::{encoder, OscMessage, OscPacket, OscType};
 
 #[derive(Resource)]
 pub struct OscSender {
@@ -27,11 +27,15 @@ impl OscSender {
         }
     }
 
-    pub fn send(&self, address: &str, args: Vec<OscType>) {
+    pub fn send<T, I>(&self, address: &str, args: T)
+    where
+        T: IntoIterator<Item = I>,
+        I: Into<OscType>,
+    {
         let client = UdpSocket::bind("0.0.0.0:0").expect("Failed to bind to socket");
         let packet = OscPacket::Message(OscMessage {
             addr: address.to_string(),
-            args: args,
+            args: args.into_iter().map(Into::into).collect(),
         });
 
         let buf = encoder::encode(&packet).unwrap();
