@@ -1,6 +1,6 @@
 use bevy::prelude::*;
-use bevy_mod_osc::osc_sender::OscSender;
-// use rosc::OscType;
+use bevy_mod_osc::{osc_args, osc_sender::OscSender};
+use rosc::OscType;
 
 fn main() {
     App::new()
@@ -13,13 +13,16 @@ fn main() {
 fn setup(
     mut osc_sender: ResMut<OscSender>,
 ) {
+    println!("Sending OSC messages to {}:{}", osc_sender.host, osc_sender.port);
+
     // osc send message
     osc_sender.send("/test", [1, 2, 3]);
+    osc_sender.send("/test", osc_args!(1, 2.0, "a"));
+    osc_sender.send("/test", vec![OscType::Int(3), OscType::Float(4.0), OscType::String("b".to_string())]);
 
-    // or
-    // osc_sender.send("/test", vec![OscType::Int(1), OscType::Int(2), OscType::Int(3)]);
-
-    println!("Sent OSC message: /test 1 2 3 to {}:{}", osc_sender.host, osc_sender.port);
+    println!("Sent OSC message: /test 1 2 3");
+    println!("Sent OSC message: /test 1 2.0 a");
+    println!("Sent OSC message: /test 3 4.0 b");
 
     std::process::exit(0);
 }

@@ -1,6 +1,7 @@
 use std::net::UdpSocket;
 use bevy::prelude::*;
 use rosc::{encoder, OscMessage, OscPacket, OscType};
+// use crate::osc_arg; // Add missing import statement
 
 #[derive(Resource)]
 pub struct OscSender {
@@ -25,6 +26,17 @@ impl Default for OscSender {
 fn is_ipv6_addr(host: &str) -> bool {
     // WORKAROUND
     host.contains(":")
+}
+
+pub fn osc_arg<T: Into<OscType>>(arg: T) -> OscType {
+    arg.into()
+}
+
+// define macro to given tuple as argument
+#[macro_export] macro_rules! osc_args {
+    ( $( $x:expr ),* ) => {
+        vec![$( bevy_mod_osc::osc_sender::osc_arg($x) ),*]
+    };
 }
 
 impl OscSender {
