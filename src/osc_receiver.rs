@@ -6,6 +6,8 @@ use rosc::{OscMessage, OscPacket, OscType};
 pub struct OscReceiverPlugin {
     /// The port to receive OSC messages (ex: 1234)
     pub port: u16,
+    /// Whether to use IPv6
+    pub ipv6: bool,
     /// Whether to print debug messages
     pub debug_print: bool,
 }
@@ -22,12 +24,14 @@ pub struct OscReceiver {
     /// Whether to print debug messages
     pub debug_print: bool,
     pub socket: Option<UdpSocket>,
+    pub ipv6: bool,
 }
 
 impl Default for OscReceiverPlugin {
     fn default() -> Self {
         Self {
             port: 1234,
+            ipv6: false,
             debug_print: false,
         }
     }
@@ -35,21 +39,27 @@ impl Default for OscReceiverPlugin {
 
 impl Plugin for OscReceiverPlugin {
     fn build(&self, app: &mut App) {
+        let from_ip = if self.ipv6 {
+            "[::1]"
+        } else {
+            "0.0.0.0"
+        };
         let socket = UdpSocket::bind(format!("{}:{}",
-            "0.0.0.0", self.port
+            from_ip, self.port
         )).expect("Failed to bind to socket");
 
         if self.debug_print {
-            println!("Listening for OSC on {}:{}", "0.0.0.0", self.port);
+            println!("Listening for OSC on {}:{}", from_ip, self.port);
         }
 
-        let is_first_time = !app.world.contains_resource::<OscReceiver>();
+        let is_first_time = !app.world.contains_resource::<Events<OscMessageEvent>>();
 
         app.add_event::<OscMessageEvent>();
         app.insert_resource(OscReceiver {
             port: self.port,
             debug_print: self.debug_print,
             socket: Some(socket),
+            ipv6: self.ipv6,
         });
 
         // NOTE: register only once
@@ -61,9 +71,26 @@ impl Plugin for OscReceiverPlugin {
 }
 
 impl OscReceiverPlugin {
-    pub fn new(port: u16, debug_print: bool) -> Self {
+    pub fn new(port: u16, ipv6:bool, debug_print: bool) -> Self {
         Self {
             port,
+            ipv6,
+            debug_print,
+        }
+    }
+
+    pub fn new_ipv4(port: u16, debug_print: bool) -> Self {
+        Self {
+            port,
+            ipv6: false,
+            debug_print,
+        }
+    }
+
+    pub fn new_ipv6(port: u16, debug_print: bool) -> Self {
+        Self {
+            port,
+            ipv6: true,
             debug_print,
         }
     }

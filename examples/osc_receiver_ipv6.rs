@@ -6,7 +6,7 @@ fn main() {
         .add_plugins(MinimalPlugins)
         .add_plugins(OscReceiverPlugin {
             port: 1234,
-            ipv6: false,
+            ipv6: true,
             debug_print: true,
         })
         .add_systems(Update, osc_event_handler)

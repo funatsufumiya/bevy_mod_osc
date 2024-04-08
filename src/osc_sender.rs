@@ -1,5 +1,5 @@
 use std::net::UdpSocket;
-use bevy::{prelude::*, reflect::impl_from_reflect_value};
+use bevy::prelude::*;
 use rosc::{encoder, OscMessage, OscPacket, OscType};
 
 #[derive(Resource)]
@@ -8,6 +8,8 @@ pub struct OscSender {
     pub host: String,
     /// The port to send OSC messages to (ex: 1234)
     pub port: u16,
+    /// Whether to use IPv6 (auto detect from host if use OscSender::new())
+    pub ipv6: bool,
 }
 
 impl Default for OscSender {
@@ -15,8 +17,14 @@ impl Default for OscSender {
         Self {
             host: "127.0.0.1".to_string(),
             port: 1234,
+            ipv6: false,
         }
     }
+}
+
+fn is_ipv6_addr(host: &str) -> bool {
+    // WORKAROUND
+    host.contains(":")
 }
 
 impl OscSender {
@@ -24,6 +32,7 @@ impl OscSender {
         Self {
             host: host.to_string(),
             port,
+            ipv6: is_ipv6_addr(host),
         }
     }
 
@@ -32,7 +41,12 @@ impl OscSender {
         T: IntoIterator<Item = I>,
         I: Into<OscType>,
     {
-        let client = UdpSocket::bind("0.0.0.0:0").expect("Failed to bind to socket");
+        let from_ip = if self.ipv6 {
+            "[::1]"
+        } else {
+            "0.0.0.0"
+        };
+        let client = UdpSocket::bind(format!("{}:0", from_ip)).expect("Failed to bind to socket");
         let packet = OscPacket::Message(OscMessage {
             addr: address.to_string(),
             args: args.into_iter().map(Into::into).collect(),
