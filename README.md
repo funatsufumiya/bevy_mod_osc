@@ -6,7 +6,14 @@ OSC plugin (using [rosc](https://github.com/klingtnet/rosc)) for Bevy engine.
 
 ## Usage
 
-Add `bevy_mod_osc` to your `Cargo.toml`:
+- Add `bevy_mod_osc` to your `Cargo.toml`:
+
+```toml:Cargo.toml
+[dependencies]
+bevy_mod_osc = "0.1"
+```
+
+- see [examples](examples)
 
 ## Version compatibility
 
