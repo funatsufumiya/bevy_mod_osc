@@ -1,5 +1,6 @@
 use std::net::UdpSocket;
-use bevy::{ecs::system::{CommandQueue, RunSystemOnce}, log::tracing_subscriber::field::debug, prelude::*, scene::ron::de};
+use bevy::prelude::*;
+use bevy::ecs::system::RunSystemOnce;
 use bevy_async_task::{AsyncTaskRunner, AsyncTaskStatus};
 use rosc::{OscMessage, OscPacket, OscType};
 use std::collections::VecDeque;
@@ -16,7 +17,7 @@ pub struct OscReceiverPlugin {
     pub port: u16,
     /// Whether to use IPv6
     pub use_ipv6: bool,
-    /// Whether to use thread
+    /// Whether to use thread. If false, it will use async task
     pub use_thread: bool,
     /// Whether to print debug messages
     pub debug_print: bool,
@@ -134,26 +135,22 @@ fn debug_print_osc_message(msg: &OscMessage) {
         get_type_tags(&msg.args.iter().collect::<Vec<_>>()));
 }
 
-fn handle_osc_message(msg: rosc::OscMessage, command_queue: &mut CommandQueue, debug_print: bool) {
+fn handle_osc_message(msg: rosc::OscMessage, osc_message_queue: &mut OscMessageQueue, debug_print: bool) {
     if debug_print {
         debug_print_osc_message(&msg);
     }
 
-    command_queue.push(move |world: &mut World| {
-        world.send_event(OscMessageEvent {
-            message: msg.clone(),
-        });
-    });
+    osc_message_queue.0.push_back(msg);
 }
 
-fn handle_osc_packet(packet: OscPacket, command_queue: &mut CommandQueue, debug_print: bool) {
+fn handle_osc_packet(packet: OscPacket, osc_message_queue: &mut OscMessageQueue, debug_print: bool) {
     match packet {
         OscPacket::Message(msg) => {
-            handle_osc_message(msg, command_queue, debug_print);
+            handle_osc_message(msg, osc_message_queue, debug_print);
         }
         OscPacket::Bundle(bundle) => {
             bundle.content.iter().for_each(|packet| {
-                handle_osc_packet(packet.clone(), command_queue, debug_print);
+                handle_osc_packet(packet.clone(), osc_message_queue, debug_print);
             });
         }
     }
@@ -178,22 +175,22 @@ fn handle_osc_packet_in_thread(packet: OscPacket, message_queue: &mut VecDeque<O
 async fn osc_handler(
     mut socket: UdpSocket,
     debug_print: bool,
-) -> CommandQueue
+) -> OscMessageQueue
 {
     let mut buf = [0u8; rosc::decoder::MTU];
-    let mut command_queue = CommandQueue::default();
+    let mut osc_message_queue = OscMessageQueue(VecDeque::new());
     match socket.recv_from(&mut buf) {
         Ok((size, _addr)) => {
             // println!("Received packet with size {} from: {}", size, addr);
             let packet = rosc::decoder::decode_udp(&buf[..size]).unwrap();
-            handle_osc_packet(packet.1, &mut command_queue, debug_print);
+            handle_osc_packet(packet.1, &mut osc_message_queue, debug_print);
         }
         Err(e) => {
             warn!("Error receiving from socket: {}", e);
             // break;
         }
     }
-    command_queue
+    osc_message_queue
 }
 
 fn osc_handler_in_thread (
@@ -257,9 +254,9 @@ pub fn start_osc_handling_thread (
 }
 
 pub fn osc_handling_async(
-    mut task_executor: AsyncTaskRunner<CommandQueue>,
+    mut task_executor: AsyncTaskRunner<OscMessageQueue>,
     osc_receiver: Res<OscReceiver>,
-    mut commands: Commands,
+    mut ev: EventWriter<OscMessageEvent>,
 ) {
     match task_executor.poll() {
         AsyncTaskStatus::Idle => {
@@ -274,9 +271,12 @@ pub fn osc_handling_async(
         AsyncTaskStatus::Pending => {
             // println!("osc_handling: pending");
         }
-        AsyncTaskStatus::Finished(command_queue) => {
-            let mut command_queue = command_queue;
-            commands.append(&mut command_queue);
+        AsyncTaskStatus::Finished(osc_message_queue) => {
+            for msg in osc_message_queue.0 {
+                ev.send(OscMessageEvent {
+                    message: msg,
+                });
+            }
         }
     }
 }
