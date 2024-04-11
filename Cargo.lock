@@ -866,12 +866,13 @@ dependencies = [
 
 [[package]]
 name = "bevy_mod_osc"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "async-std",
  "bevy",
  "bevy_async_task",
  "chrono",
+ "lazy_static",
  "rosc",
 ]
 
