@@ -1,6 +1,8 @@
 # bevy_mod_osc
 
 [![Crates.io](https://img.shields.io/crates/v/bevy_mod_osc.svg)](https://crates.io/crates/bevy_mod_osc)
+[![Docs.rs](https://docs.rs/bevy_mod_osc/badge.svg)](https://docs.rs/bevy_mod_osc)
+[![License](https://img.shields.io/crates/l/bevy_mod_osc.svg)](LICENSE)
 
 OSC plugin (using [rosc](https://github.com/klingtnet/rosc)) for Bevy engine.
 
