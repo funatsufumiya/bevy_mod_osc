@@ -6,6 +6,11 @@
 
 OSC plugin (using [rosc](https://github.com/klingtnet/rosc)) for Bevy engine.
 
+## Features
+
+- You can choose IPv4 or IPv6
+- You can choose using thread or not (recommend to use thread. see [Known Issues](#known-issues))
+
 ## Usage
 
 - Add `bevy_mod_osc` to your `Cargo.toml`:
