@@ -17,7 +17,7 @@ OSC plugin (using [rosc](https://github.com/klingtnet/rosc)) for Bevy engine.
 
 ```toml:Cargo.toml
 [dependencies]
-bevy_mod_osc = "0.1"
+bevy_mod_osc = "0.2"
 ```
 
 - see [examples](examples)
@@ -26,6 +26,7 @@ bevy_mod_osc = "0.1"
 
 | Bevy | bevy_osc |
 |------|----------|
+| 0.14 | 0.2      |
 | 0.13 | 0.1      |
 
 ## Known issues
