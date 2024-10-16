@@ -69,7 +69,7 @@ impl Plugin for OscReceiverPlugin {
             println!("Listening for OSC on {}:{}", from_ip, self.port);
         }
 
-        let is_first_time = !app.world.contains_resource::<Events<OscMessageEvent>>();
+        let is_first_time = !app.world().contains_resource::<Events<OscMessageEvent>>();
 
         app.add_event::<OscMessageEvent>();
         app.insert_resource(OscReceiver {
@@ -83,7 +83,8 @@ impl Plugin for OscReceiverPlugin {
         // NOTE: register only once
             // println!("Registering OscMessageEvent");
         if self.use_thread {
-            app.world.run_system_once(start_osc_handling_thread);
+            let mut world = app.world_mut();
+            world.run_system_once(start_osc_handling_thread);
             if is_first_time {
                 app.add_systems(Update, osc_handling_in_thread_update);
             }
