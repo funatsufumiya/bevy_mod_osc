@@ -1,7 +1,7 @@
-use std::net::UdpSocket;
+use std::{net::UdpSocket, task::Poll};
 use bevy::prelude::*;
 use bevy::ecs::system::RunSystemOnce;
-use bevy_async_task::{AsyncTaskRunner, AsyncTaskStatus};
+use bevy_async_task::AsyncTaskRunner;
 use rosc::{OscMessage, OscPacket, OscType};
 use std::collections::VecDeque;
 use lazy_static::lazy_static;
@@ -259,24 +259,27 @@ pub fn osc_handling_async(
     osc_receiver: Res<OscReceiver>,
     mut ev: EventWriter<OscMessageEvent>,
 ) {
+    if task_executor.is_idle() {
+        // NOTE: try_clone() is a workaround for borrowing issue. Probably no cost cloning a socket.
+        task_executor.start(
+            osc_handler(
+                osc_receiver.socket.as_ref().unwrap().try_clone().unwrap(),
+                osc_receiver.debug_print
+            )
+        );
+    }
+
     match task_executor.poll() {
-        AsyncTaskStatus::Idle => {
-            // NOTE: try_clone() is a workaround for borrowing issue. Probably no cost cloning a socket.
-            task_executor.start(
-                osc_handler(
-                    osc_receiver.socket.as_ref().unwrap().try_clone().unwrap(),
-                    osc_receiver.debug_print
-                )
-            );
-        }
-        AsyncTaskStatus::Pending => {
+        Poll::Pending => {
             // println!("osc_handling: pending");
         }
-        AsyncTaskStatus::Finished(osc_message_queue) => {
-            for msg in osc_message_queue.0 {
-                ev.send(OscMessageEvent {
-                    message: msg,
-                });
+        Poll::Ready(v) => {
+            if let Ok(osc_message_queue) = v {
+                for msg in osc_message_queue.0 {
+                    ev.send(OscMessageEvent {
+                        message: msg,
+                    });
+                }
             }
         }
     }

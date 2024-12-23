@@ -25,7 +25,7 @@ fn update(
 ) {
     // send each second
     if last_sent_time.last_sent_time.is_none() || last_sent_time.last_sent_time.unwrap() + Duration::from_secs(1) < time.elapsed() {
-        let val: i32 = (time.elapsed_seconds().sin() * 100.0) as i32;
+        let val: i32 = (time.elapsed_secs().sin() * 100.0) as i32;
 
         // osc send message
         osc_sender.send("/test", [val]);

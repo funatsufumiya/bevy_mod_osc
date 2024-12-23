@@ -22,8 +22,21 @@ fn osc_event_handler(
             if event.message.args.len() < 1 {
                 println!("/test received!");
             }else{
-                let val = event.message.args[0].clone().int().unwrap();
-                println!("/test received! (val: {})", val);
+                let v = &event.message.args[0];
+                match v {
+                    rosc::OscType::Int(val) => {
+                        println!("/test received! {}", val);
+                    },
+                    rosc::OscType::Float(val) => {
+                        println!("/test received! {}", val);
+                    },
+                    rosc::OscType::String(val) => {
+                        println!("/test received! {}", val);
+                    },
+                    _ => {
+                        println!("/test received! {:?}", event.message.args);
+                    }
+                }
             }
         }
     }
