@@ -1,6 +1,6 @@
 [package]
 name = "bevy_mod_osc"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 
 readme = "README.md"
@@ -11,7 +11,7 @@ repository = "https://github.com/funatsufumiya/bevy_mod_osc"
 keywords = ["osc"]
 
 [dev-dependencies]
-# bevy = "0.14"
+# bevy = "0.15"
 
 [dependencies]
 bevy = { version = "0.15", default-features = false, features = ["bevy_asset"]}
