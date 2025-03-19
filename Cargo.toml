@@ -11,11 +11,11 @@ repository = "https://github.com/funatsufumiya/bevy_mod_osc"
 keywords = ["osc"]
 
 [dev-dependencies]
-# bevy = "0.15"
+# bevy = "^0.15.1"
 
 [dependencies]
-bevy = { version = "0.15", default-features = false, features = ["bevy_asset"]}
-bevy_async_task = "0.4"
+bevy = { version = "^0.15.1", default-features = false, features = ["bevy_asset"]}
+bevy_async_task = "^0.4"
 rosc = "~0.10"
 chrono = "0.4.39"
 async-std = "1.13.0"
