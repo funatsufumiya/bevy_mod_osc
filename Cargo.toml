@@ -1,6 +1,6 @@
 [package]
 name = "bevy_mod_osc"
-version = "0.3.1"
+version = "0.4.1"
 edition = "2021"
 
 readme = "README.md"
@@ -11,12 +11,12 @@ repository = "https://github.com/funatsufumiya/bevy_mod_osc"
 keywords = ["osc"]
 
 [dev-dependencies]
-# bevy = "^0.15.1"
+bevy = "^0.16"
 
 [dependencies]
-bevy = { version = "^0.15.1", default-features = false, features = ["bevy_asset"]}
-bevy_async_task = "^0.4"
-rosc = "~0.10"
-chrono = "0.4.39"
+bevy = { version = "^0.16", default-features = false, features = ["bevy_asset"]}
+bevy_async_task = "^0.8"
+rosc = "^0.11"
+chrono = "0.4.41"
 async-std = "1.13.0"
 lazy_static = "1.5.0"

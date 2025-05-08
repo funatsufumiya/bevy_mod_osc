@@ -1,7 +1,7 @@
 use std::{net::UdpSocket, task::Poll};
 use bevy::prelude::*;
 use bevy::ecs::system::RunSystemOnce;
-use bevy_async_task::AsyncTaskRunner;
+use bevy_async_task::TaskRunner;
 use rosc::{OscMessage, OscPacket, OscType};
 use std::collections::VecDeque;
 use lazy_static::lazy_static;
@@ -255,7 +255,7 @@ pub fn start_osc_handling_thread (
 }
 
 pub fn osc_handling_async(
-    mut task_executor: AsyncTaskRunner<OscMessageQueue>,
+    mut task_executor: TaskRunner<OscMessageQueue>,
     osc_receiver: Res<OscReceiver>,
     mut ev: EventWriter<OscMessageEvent>,
 ) {
@@ -273,13 +273,11 @@ pub fn osc_handling_async(
         Poll::Pending => {
             // println!("osc_handling: pending");
         }
-        Poll::Ready(v) => {
-            if let Ok(osc_message_queue) = v {
-                for msg in osc_message_queue.0 {
-                    ev.send(OscMessageEvent {
-                        message: msg,
-                    });
-                }
+        Poll::Ready(osc_message_queue) => {
+            for msg in osc_message_queue.0 {
+                ev.write(OscMessageEvent {
+                    message: msg,
+                });
             }
         }
     }
