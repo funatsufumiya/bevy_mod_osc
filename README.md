@@ -34,3 +34,7 @@ bevy_mod_osc = "0.4"
 ## Known issues
 
 - on OSC Receiver, if choose `use_thread: false`, message will delay if too many messages are given at once. Recommend `use_thread: true` if you need to receive messages in real-time.
+
+## License
+
+Dual licensed under WTFPL and/or 0BSD.
