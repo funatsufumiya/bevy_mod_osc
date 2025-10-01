@@ -23,7 +23,7 @@ pub struct OscReceiverPlugin {
     pub debug_print: bool,
 }
 
-#[derive(Event)]
+#[derive(Message)]
 pub struct OscMessageEvent {
     pub message: OscMessage,
 }
@@ -69,9 +69,9 @@ impl Plugin for OscReceiverPlugin {
             println!("Listening for OSC on {}:{}", from_ip, self.port);
         }
 
-        let is_first_time = !app.world().contains_resource::<Events<OscMessageEvent>>();
+        let is_first_time = !app.world().contains_resource::<Messages<OscMessageEvent>>();
 
-        app.add_event::<OscMessageEvent>();
+        app.add_message::<OscMessageEvent>();
         app.insert_resource(OscReceiver {
             port: self.port,
             debug_print: self.debug_print,
@@ -217,12 +217,12 @@ fn osc_handler_in_thread (
 
 /// communicate with OSC receiver in thread
 pub fn osc_handling_in_thread_update (
-    mut ev: EventWriter<OscMessageEvent>,
+    mut ev: MessageWriter<OscMessageEvent>,
 )
 {
     let mut osc_message_queue = OSC_MESSAGE_QUEUE.lock().unwrap();
     for msg in osc_message_queue.iter() {
-        ev.send(OscMessageEvent {
+        ev.write(OscMessageEvent {
             message: msg.clone(),
         });
     }
@@ -257,7 +257,7 @@ pub fn start_osc_handling_thread (
 pub fn osc_handling_async(
     mut task_executor: TaskRunner<OscMessageQueue>,
     osc_receiver: Res<OscReceiver>,
-    mut ev: EventWriter<OscMessageEvent>,
+    mut ev: MessageWriter<OscMessageEvent>,
 ) {
     if task_executor.is_idle() {
         // NOTE: try_clone() is a workaround for borrowing issue. Probably no cost cloning a socket.
