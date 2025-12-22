@@ -14,7 +14,7 @@ keywords = ["osc"]
 bevy = "^0.17"
 
 [dependencies]
-bevy = { version = "^0.17", default-features = false, features = ["bevy_asset"]}
+bevy = { version = "^0.17", default-features = false, features = ["bevy_asset", "bevy_log"]}
 bevy_async_task = "^0.11.1"
 rosc = "^0.11"
 chrono = "0.4.41"
