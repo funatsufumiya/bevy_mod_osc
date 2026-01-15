@@ -9,7 +9,6 @@ OSC plugin (using [rosc](https://github.com/klingtnet/rosc)) for Bevy engine.
 ## Features
 
 - You can choose IPv4 or IPv6
-- You can choose using thread or not (recommend to use thread. see [Known Issues](#known-issues))
 
 ## Usage
 
@@ -32,10 +31,6 @@ bevy_mod_osc = "0.6"
 | 0.15 | 0.3      |
 | 0.14 | 0.2      |
 | 0.13 | 0.1      |
-
-## Known issues
-
-- on OSC Receiver, if choose `use_thread: false`, message will delay if too many messages are given at once. Recommend `use_thread: true` if you need to receive messages in real-time.
 
 ## License
 
