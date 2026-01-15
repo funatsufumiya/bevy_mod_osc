@@ -2,7 +2,7 @@ use std::{net::UdpSocket, task::Poll};
 use bevy::prelude::*;
 use bevy::ecs::system::RunSystemOnce;
 use bevy::log::warn;
-use bevy_async_task::TaskRunner;
+// use bevy_async_task::TaskRunner;
 use rosc::{OscMessage, OscPacket, OscType};
 use std::collections::VecDeque;
 use lazy_static::lazy_static;
@@ -90,9 +90,10 @@ impl Plugin for OscReceiverPlugin {
                 app.add_systems(Update, osc_handling_in_thread_update);
             }
         }else{
-            if is_first_time {
-                app.add_systems(Update, osc_handling_async);
-            }
+            panic!("[bevy_mod_osc] use_thread = false is not supported now")
+            // if is_first_time {
+            //     app.add_systems(Update, osc_handling_async);
+            // }
         }
     }
 }
@@ -255,34 +256,34 @@ pub fn start_osc_handling_thread (
     });
 }
 
-pub fn osc_handling_async(
-    mut task_executor: TaskRunner<OscMessageQueue>,
-    osc_receiver: Res<OscReceiver>,
-    mut ev: MessageWriter<OscMessageEvent>,
-) {
-    if task_executor.is_idle() {
-        // NOTE: try_clone() is a workaround for borrowing issue. Probably no cost cloning a socket.
-        task_executor.start(
-            osc_handler(
-                osc_receiver.socket.as_ref().unwrap().try_clone().unwrap(),
-                osc_receiver.debug_print
-            )
-        );
-    }
+// pub fn osc_handling_async(
+//     mut task_executor: TaskRunner<OscMessageQueue>,
+//     osc_receiver: Res<OscReceiver>,
+//     mut ev: MessageWriter<OscMessageEvent>,
+// ) {
+//     if task_executor.is_idle() {
+//         // NOTE: try_clone() is a workaround for borrowing issue. Probably no cost cloning a socket.
+//         task_executor.start(
+//             osc_handler(
+//                 osc_receiver.socket.as_ref().unwrap().try_clone().unwrap(),
+//                 osc_receiver.debug_print
+//             )
+//         );
+//     }
 
-    match task_executor.poll() {
-        Poll::Pending => {
-            // println!("osc_handling: pending");
-        }
-        Poll::Ready(osc_message_queue) => {
-            for msg in osc_message_queue.0 {
-                ev.write(OscMessageEvent {
-                    message: msg,
-                });
-            }
-        }
-    }
-}
+//     match task_executor.poll() {
+//         Poll::Pending => {
+//             // println!("osc_handling: pending");
+//         }
+//         Poll::Ready(osc_message_queue) => {
+//             for msg in osc_message_queue.0 {
+//                 ev.write(OscMessageEvent {
+//                     message: msg,
+//                 });
+//             }
+//         }
+//     }
+// }
 
 fn get_type_string(osc_type: &OscType) -> String {
     match osc_type {

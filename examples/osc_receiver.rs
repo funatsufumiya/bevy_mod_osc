@@ -15,7 +15,7 @@ fn main() {
 }
 
 fn osc_event_handler(
-    mut events: EventReader<OscMessageEvent>,
+    mut events: MessageReader<OscMessageEvent>,
 ) {
     for event in events.read() {
         if event.message.addr == "/test" {
